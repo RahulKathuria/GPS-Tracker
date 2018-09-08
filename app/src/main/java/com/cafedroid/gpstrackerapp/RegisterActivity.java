@@ -1,6 +1,7 @@
 package com.cafedroid.gpstrackerapp;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +44,9 @@ public class RegisterActivity extends AppCompatActivity {
                     if(!check){
 
                         // Email not registered, we have to make a new user with this email
+                        Intent passwordIntent = new Intent(RegisterActivity.this,PasswordActivity.class);
+                        passwordIntent.putExtra("email",e4_email.getText().toString());
+                        startActivity(passwordIntent);
                     }
                     else{
                         dialog.dismiss();
