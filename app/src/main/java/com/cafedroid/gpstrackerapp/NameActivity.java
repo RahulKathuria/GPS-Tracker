@@ -22,7 +22,7 @@ public class NameActivity extends AppCompatActivity {
         Intent myIntent = getIntent();
         if(myIntent!=null){
             email = myIntent.getStringExtra("email");
-
+            password = myIntent.getStringExtra("password");
         }
     }
 }
