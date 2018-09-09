@@ -29,6 +29,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.3'
     implementation 'com.google.firebase:firebase-database:16.0.2'
     implementation 'com.google.firebase:firebase-core:16.0.3'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
