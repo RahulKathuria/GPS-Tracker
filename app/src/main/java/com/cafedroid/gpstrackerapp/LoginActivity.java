@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(),"Wrong ",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Wrong User Credentials",Toast.LENGTH_LONG).show();
                 }
             }
         });
