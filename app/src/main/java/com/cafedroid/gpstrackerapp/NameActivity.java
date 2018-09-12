@@ -49,7 +49,18 @@ public class NameActivity extends AppCompatActivity {
         int n = 100000 +  r.nextInt(900000);
         String code = String.valueOf(n);
 
-        if(resultUri!=null){}
+        if(resultUri!=null){
+            Intent myIntent = new Intent(NameActivity.this,InviteCodeActivity.class);
+            myIntent.putExtra("name",e5.getText().toString());
+            myIntent.putExtra("email",email);
+            myIntent.putExtra("password",password);
+            myIntent.putExtra("date",date);
+            myIntent.putExtra("isSharing",false);
+            myIntent.putExtra("code",code);
+            myIntent.putExtra("imageUri",resultUri);
+            startActivity(myIntent);
+
+        }
         else{
             Toast.makeText(getApplicationContext(),"Please Choose an Image",Toast.LENGTH_SHORT).show();
         }
