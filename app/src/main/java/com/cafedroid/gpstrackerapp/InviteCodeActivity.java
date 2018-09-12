@@ -1,4 +1,4 @@
-git statuspackage com.cafedroid.gpstrackerapp;
+package com.cafedroid.gpstrackerapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
