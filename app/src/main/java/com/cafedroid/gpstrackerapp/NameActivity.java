@@ -49,7 +49,7 @@ public class NameActivity extends AppCompatActivity {
         int n = 100000 +  r.nextInt(900000);
         String code = String.valueOf(n);
 
-        if(resultUri!=null){}
+        if(resultUri!=null){
         else{
             Toast.makeText(getApplicationContext(),"Please Choose an Image",Toast.LENGTH_SHORT).show();
         }
