@@ -11,6 +11,7 @@
       android:layout_height="96dp"
       android:id="@+id/circleImageView"
       android:src="@drawable/ic_person_black_24dp"
+      android:onClick="selectImage"
       android:layout_alignParentTop="true"
       android:layout_centerHorizontal="true"
       />
@@ -27,13 +28,14 @@
         android:inputType="textPersonName"
         android:text="Name" />
 
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="218dp"
-        android:text="Next" />
+  <Button
+      android:id="@+id/button6"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="218dp"
+      android:onClick="generateCode"
+      android:text="Next" />
 
 </RelativeLayout>
