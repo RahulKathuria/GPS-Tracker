@@ -33,7 +33,7 @@ public class NameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
         e5 = findViewById(R.id.editText5);
-        b6 = findViewById(R.id.b`1utton6);
+        b6 = findViewById(R.id.button6);
         circleImageView = findViewById(R.id.circleImageView);
 
         Intent myIntent = getIntent();
