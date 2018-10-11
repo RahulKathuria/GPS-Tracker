@@ -6,4 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".InviteCodeActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="132dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="154dp"
+        android:text="XXXXXX"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="236dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="78dp"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="16sp"
+        android:text="Your friends would need this invite code to join your circle" />
 </RelativeLayout>

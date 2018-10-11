@@ -33,7 +33,7 @@ public class NameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name);
         e5 = findViewById(R.id.editText5);
-        b6 = findViewById(R.id.button6);
+        b6 = findViewById(R.id.b`1utton6);
         circleImageView = findViewById(R.id.circleImageView);
 
         Intent myIntent = getIntent();
@@ -95,6 +95,7 @@ public class NameActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                  resultUri = result.getUri();
+                 circleImageView.setImageURI(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
