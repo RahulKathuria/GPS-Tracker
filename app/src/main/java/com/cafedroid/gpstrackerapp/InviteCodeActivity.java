@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +29,7 @@ public class InviteCodeActivity extends AppCompatActivity {
     FirebaseUser user;
     DatabaseReference reference;
     ProgressDialog dialog;
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,24 @@ public class InviteCodeActivity extends AppCompatActivity {
         auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    CreateUser createuser = new CreateUser(name,email,password,code,"false","NA","NA","NA");
+                    user = auth.getCurrentUser();
+                    userId = user.getUid();
+                    reference.child(userId).setValue(createuser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                dialog.dismiss();
+                            Toast.makeText(getApplicationContext(),"User registered successfully",Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                                dialog.dismiss();
+                                Toast.makeText(getApplicationContext(),"Could not insert value in database",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
 
             }
         });
