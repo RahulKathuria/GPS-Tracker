@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,13 +70,25 @@ public class InviteCodeActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 dialog.dismiss();
+
                             Toast.makeText(getApplicationContext(),"User registered successfully",Toast.LENGTH_SHORT).show();
+                            finish();
+                            Intent myIntent = new Intent(InviteCodeActivity.this,MyNavigationDrawer.class);
+                            startActivity(myIntent);
+
                         }
                         else{
                                 dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),"Could not insert value in database",Toast.LENGTH_SHORT).show();
+                                task.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                //Toast.makeText(getApplicationContext(),"Could not insert value in database",Toast.LENGTH_SHORT).show();
                             }
                         }
+
                     });
                 }
 

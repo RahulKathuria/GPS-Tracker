@@ -36,6 +36,7 @@
       android:layout_centerHorizontal="true"
       android:layout_marginBottom="218dp"
       android:onClick="generateCode"
+      android:background="#26A69A"
       android:text="Next" />
 
 </RelativeLayout>

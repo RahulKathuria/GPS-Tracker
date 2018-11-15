@@ -1,8 +1,10 @@
 package com.cafedroid.gpstrackerapp;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,11 +21,26 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         auth = FirebaseAuth.getInstance();
+
+        if(auth.getCurrentUser()==null){
+            setContentView(R.layout.activity_login);
+            Log.e("TAG", "onCreate: auth is null" );
+        }
+        else{
+            Log.e("TAG", "onCreate: started drawer" );
+            Intent myIntent = new Intent(LoginActivity.this,MyNavigationDrawer.class);
+            startActivity(myIntent);
+            finish();
+        }
         e1 = findViewById(R.id.editText);
         e2 = findViewById(R.id.editText2);
 
@@ -36,6 +53,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
+                    Intent myIntent = new Intent(LoginActivity.this,MyNavigationDrawer.class);
+                    startActivity(myIntent);
+                    finish();
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"Wrong User Credentials",Toast.LENGTH_LONG).show();
@@ -43,5 +63,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void goToRegister(View v){
+
+        Intent myIntent = new Intent(LoginActivity.this,RegisterActivity.class);
+        startActivity(myIntent);
     }
 }

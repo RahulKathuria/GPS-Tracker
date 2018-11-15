@@ -63,6 +63,7 @@ public class NameActivity extends AppCompatActivity {
             myIntent.putExtra("code",code);
             myIntent.putExtra("imageUri",resultUri);
             startActivity(myIntent);
+            finish();
 
         }
         else{

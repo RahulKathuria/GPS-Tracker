@@ -27,5 +27,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="0dp"
         android:onClick="goToPasswordActivity"
-        android:text="NEXT" />
+        android:text="NEXT"
+        android:background="#26A69A"/>
 </RelativeLayout>
