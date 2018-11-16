@@ -30,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 
 public class MyNavigationDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
@@ -41,6 +42,7 @@ public class MyNavigationDrawer extends AppCompatActivity
     GoogleApiClient client;
     LocationRequest request;
     LatLng latlng;
+    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

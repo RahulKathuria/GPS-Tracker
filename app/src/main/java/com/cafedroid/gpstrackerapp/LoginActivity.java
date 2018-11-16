@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import java.util.ArrayList;
@@ -67,16 +68,20 @@ public class LoginActivity extends AppCompatActivity {
         auth.signInWithEmailAndPassword(e1.getText().toString(),e2.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_LONG).show();
-                    Intent myIntent = new Intent(LoginActivity.this,MyNavigationDrawer.class);
-                    startActivity(myIntent);
-                    finish();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"Wrong User Credentials",Toast.LENGTH_LONG).show();
-                }
+                if(task.isSuccessful()) {
+                    FirebaseUser user = auth.getCurrentUser();
+                    if (user.isEmailVerified()) {
+
+                        Intent myIntent = new Intent(LoginActivity.this, MyNavigationDrawer.class);
+                        startActivity(myIntent);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Email Not Verified", Toast.LENGTH_LONG).show();
+                    }
+                } else Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
             }
+
+
         });
 
     }

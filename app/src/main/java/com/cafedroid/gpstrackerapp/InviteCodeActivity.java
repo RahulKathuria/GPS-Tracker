@@ -18,6 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 public class InviteCodeActivity extends AppCompatActivity {
 
@@ -29,6 +32,7 @@ public class InviteCodeActivity extends AppCompatActivity {
     DatabaseReference reference;
     ProgressDialog dialog;
     String userId;
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,7 @@ public class InviteCodeActivity extends AppCompatActivity {
         t1 = findViewById(R.id.textView);
         auth = FirebaseAuth.getInstance();
         dialog = new ProgressDialog(this);
+        storageReference = FirebaseStorage.getInstance().getReference().child("user images");
         Intent myIntent = getIntent();
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
         if(myIntent!=null){
@@ -67,23 +72,47 @@ public class InviteCodeActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                dialog.dismiss();
 
-                            Toast.makeText(getApplicationContext(),"User registered successfully",Toast.LENGTH_SHORT).show();
-                            finish();
-                            Intent myIntent = new Intent(InviteCodeActivity.this,MyNavigationDrawer.class);
-                            startActivity(myIntent);
 
-                        }
-                        else{
-                                dialog.dismiss();
-                                task.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                //Toast.makeText(getApplicationContext(),"Could not insert value in database",Toast.LENGTH_SHORT).show();
+                                //save the image to firebase storage
+                                StorageReference sr = storageReference.child(user.getUid() + ".jpg");
+                                sr.putFile(imageUri)
+                                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                if(task.isSuccessful()){
+
+                                                    String download_image_path = task.getResult().getStorage().getDownloadUrl().toString();
+                                                    reference.child(user.getUid()).child("imageUrl").setValue(download_image_path)
+                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if(task.isSuccessful()){
+                                                                        dialog.dismiss();
+
+                                                                        sendVerificationEmail();
+                                                                        Intent myIntent = new Intent(InviteCodeActivity.this,MyNavigationDrawer.class);
+                                                                        startActivity(myIntent);
+                                                                        finish();
+                                                                    }
+                                                                    else{
+                                                                        dialog.dismiss();
+
+                                                                        task.addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        });
+
+
+
                             }
                         }
 
@@ -92,6 +121,28 @@ public class InviteCodeActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+
+
+
+
+    public void sendVerificationEmail(){
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getApplicationContext(),"Email Sent for verification",Toast.LENGTH_SHORT).show();
+                            finish();
+                            auth.signOut();
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"Could Not send Verification Email",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 }
