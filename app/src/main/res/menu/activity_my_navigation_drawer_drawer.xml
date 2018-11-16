@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group>
 
         <item
             android:id="@+id/nav_signOut"
@@ -22,7 +22,7 @@
             android:title="Invite Members" />
         <item
             android:id="@+id/nav_shareLocation"
-            android:title="Share Location(Whatsapp)" />
+            android:title="Share Location" />
     </group>
 
 
