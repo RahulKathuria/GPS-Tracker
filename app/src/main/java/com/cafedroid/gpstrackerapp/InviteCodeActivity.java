@@ -65,7 +65,7 @@ public class InviteCodeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    CreateUser createuser = new CreateUser(name,email,password,code,"false","NA","NA","NA");
+                    CreateUser createuser = new CreateUser(name,email,password,code,"false","NA","NA","NA",user.getUid());
                     user = auth.getCurrentUser();
                     userId = user.getUid();
                     reference.child(userId).setValue(createuser).addOnCompleteListener(new OnCompleteListener<Void>() {

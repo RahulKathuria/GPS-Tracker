@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/textView3"
         app:pinLength="6"
+        android:id="@+id/pinview"
         app:pinWidth="35dp"
         app:pinHeight="40dp"
         app:cursorVisible="true"
