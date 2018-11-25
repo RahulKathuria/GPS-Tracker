@@ -75,14 +75,14 @@ public class InviteCodeActivity extends AppCompatActivity {
 
 
                                 //save the image to firebase storage
-                                StorageReference sr = storageReference.child(user.getUid() + ".jpg");
+                                final StorageReference sr = storageReference.child(user.getUid() + ".jpg");
                                 sr.putFile(imageUri)
                                         .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                                                 if(task.isSuccessful()){
 
-                                                    String download_image_path = task.getResult().getStorage().getDownloadUrl().toString();
+                                                    String download_image_path = sr.getDownloadUrl().toString();
                                                     reference.child(user.getUid()).child("imageUrl").setValue(download_image_path)
                                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
