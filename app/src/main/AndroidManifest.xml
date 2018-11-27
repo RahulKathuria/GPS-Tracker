@@ -56,7 +56,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".JoinCircleActivity"></activity>
+        <activity android:name=".JoinCircleActivity" />
+        <activity android:name=".MyCircleActivity"></activity>
     </application>
 
 </manifest>

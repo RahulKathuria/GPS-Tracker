@@ -151,8 +151,13 @@ public class MyNavigationDrawer extends AppCompatActivity
         } else if (id == R.id.nav_inviteMembers) {
 
         } else if (id == R.id.nav_joinCircle) {
+            Intent i = new Intent(MyNavigationDrawer.this,JoinCircleActivity.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_joinedCircle) {
+
+
+
 
         } else if (id == R.id.nav_myCircle) {
 
