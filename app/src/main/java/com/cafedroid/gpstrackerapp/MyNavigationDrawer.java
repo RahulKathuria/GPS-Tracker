@@ -160,6 +160,8 @@ public class MyNavigationDrawer extends AppCompatActivity
 
 
         } else if (id == R.id.nav_myCircle) {
+            Intent i = new Intent(MyNavigationDrawer.this,MyCircleActivity.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_shareLocation) {
 

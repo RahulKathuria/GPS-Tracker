@@ -50,16 +50,16 @@ public class JoinCircleActivity extends AppCompatActivity {
 
     public void submitButton(View v){
 
-        Query query =reference.orderByChild("circlecode").equalTo(pinview.getValue());
+        Query query =reference.orderByChild("code").equalTo(pinview.getValue());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
                 if(dataSnapshot.exists()){
-                    CreateUser createUser = null;
-                    for(DataSnapshot childs : dataSnapshot.getChildren() ){
-                        createUser = childs.getValue(CreateUser.class);
+                    CreateUser createUser;
+
+                        createUser = dataSnapshot.getValue(CreateUser.class);
                         join_user_id = createUser.userId;
                         circleReference = FirebaseDatabase.getInstance().getReference().child("Users")
                                 .child(join_user_id).child("circleMembers");
@@ -80,7 +80,7 @@ public class JoinCircleActivity extends AppCompatActivity {
 
 
 
-                    }
+
                 }
                 else{
                     Toast.makeText(JoinCircleActivity.this, "Invalid Circle Code", Toast.LENGTH_SHORT).show();
