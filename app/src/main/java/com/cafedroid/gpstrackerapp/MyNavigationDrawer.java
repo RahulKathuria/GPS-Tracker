@@ -44,7 +44,8 @@ import com.squareup.picasso.Picasso;
 
 public class MyNavigationDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+      GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
 
     FirebaseAuth auth;
@@ -52,7 +53,7 @@ public class MyNavigationDrawer extends AppCompatActivity
     GoogleApiClient client;
     LocationRequest request;
     LatLng latlng;
-    DatabaseReference reference;
+    DatabaseReference reference,latReference,lonReference;
     FirebaseUser user;
     String current_user_name,current_user_email,current_user_imageUrl;
     View header;
@@ -148,6 +149,7 @@ public class MyNavigationDrawer extends AppCompatActivity
 
         if (id == R.id.nav_signOut) {
             auth.signOut();
+
         } else if (id == R.id.nav_inviteMembers) {
 
         } else if (id == R.id.nav_joinCircle) {
@@ -179,7 +181,7 @@ public class MyNavigationDrawer extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.addMarker(new MarkerOptions().position(new LatLng(30.391242, 76.358889)).title("Home️"));
+
         client = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -224,6 +226,10 @@ public class MyNavigationDrawer extends AppCompatActivity
         }
         else {
             latlng = new LatLng(location.getLatitude(), location.getLongitude());
+            latReference = reference.child(user.getUid()).child("lat");
+            latReference.setValue(location.getLatitude());
+            lonReference = reference.child(user.getUid()).child("lng");
+            lonReference.setValue(location.getLongitude());
 
             MarkerOptions options = new MarkerOptions();
             options.position(latlng);
