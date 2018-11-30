@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -65,58 +66,67 @@ public class InviteCodeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    CreateUser createuser = new CreateUser(name,email,password,code,"false","NA","NA","NA",userId);
+                    final CreateUser createuser = new CreateUser(name,email,password,code,"false","NA","NA","NA",userId);
                     user = auth.getCurrentUser();
-                    userId = user.getUid();
-                    reference.child(userId).setValue(createuser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    UserProfileChangeRequest userProfile = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                    user.updateProfile(userProfile).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()){
+                                userId = user.getUid();
+                                reference.child(userId).setValue(createuser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
 
 
-                                //save the image to firebase storage
-                                final StorageReference sr = storageReference.child(user.getUid() + ".jpg");
-                                sr.putFile(imageUri)
-                                        .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                if(task.isSuccessful()){
+                                            //save the image to firebase storage
+                                            final StorageReference sr = storageReference.child(user.getUid() + ".jpg");
+                                            sr.putFile(imageUri)
+                                                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                            if(task.isSuccessful()){
 
-                                                    String download_image_path = sr.getDownloadUrl().toString();
-                                                    reference.child(user.getUid()).child("imageUrl").setValue(download_image_path)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if(task.isSuccessful()){
-                                                                        dialog.dismiss();
-
-                                                                        sendVerificationEmail();
-                                                                        Intent myIntent = new Intent(InviteCodeActivity.this,MyNavigationDrawer.class);
-                                                                        startActivity(myIntent);
-                                                                        finish();
-                                                                    }
-                                                                    else{
-                                                                        dialog.dismiss();
-
-                                                                        task.addOnFailureListener(new OnFailureListener() {
+                                                                String download_image_path = sr.getDownloadUrl().toString();
+                                                                reference.child(user.getUid()).child("imageUrl").setValue(download_image_path)
+                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                             @Override
-                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                                if(task.isSuccessful()){
+                                                                                    dialog.dismiss();
+
+                                                                                    sendVerificationEmail();
+                                                                                    Intent myIntent = new Intent(InviteCodeActivity.this,MyNavigationDrawer.class);
+                                                                                    startActivity(myIntent);
+                                                                                    finish();
+                                                                                }
+                                                                                else{
+                                                                                    dialog.dismiss();
+
+                                                                                    task.addOnFailureListener(new OnFailureListener() {
+                                                                                        @Override
+                                                                                        public void onFailure(@NonNull Exception e) {
+                                                                                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                                                                                        }
+                                                                                    });
+                                                                                }
                                                                             }
                                                                         });
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        });
+                                                            }
+                                                        }
+                                                    });
 
 
 
+                                        }
+                                    }
+
+                                });
                             }
                         }
-
                     });
+
                 }
 
             }

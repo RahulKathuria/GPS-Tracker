@@ -29,6 +29,7 @@ public class JoinCircleActivity extends AppCompatActivity {
     FirebaseUser user;
     FirebaseAuth auth;
     String current_user_id,join_user_id;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,8 @@ public class JoinCircleActivity extends AppCompatActivity {
         currentReference = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
 
         current_user_id= user.getUid();
+        name = user.getDisplayName();
+
 
 
 
@@ -58,9 +61,10 @@ public class JoinCircleActivity extends AppCompatActivity {
 
                 if(dataSnapshot.exists()){
                     CreateUser createUser;
+                    for(DataSnapshot childss: dataSnapshot.getChildren()) {
 
-                        createUser = dataSnapshot.getValue(CreateUser.class);
-                        join_user_id = createUser.userId;
+                        createUser = childss.getValue(CreateUser.class);
+                        join_user_id = childss.getKey();
                         circleReference = FirebaseDatabase.getInstance().getReference().child("Users")
                                 .child(join_user_id).child("circleMembers");
 
@@ -68,18 +72,18 @@ public class JoinCircleActivity extends AppCompatActivity {
                         CircleJoin circleJoin1 = new CircleJoin(join_user_id);
 
 
-                        circleReference.child(user.getUid()).setValue(circleJoin)
+                        circleReference.child(current_user_id).setValue(name)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(getApplicationContext(),"User joined Successfully",Toast.LENGTH_SHORT).show();
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "User joined Successfully", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
 
 
-
+                    }
 
                 }
                 else{
