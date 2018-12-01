@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -51,16 +52,19 @@ public class JoinCircleActivity extends AppCompatActivity {
     }
 
 
+
+
     public void submitButton(View v){
 
         Query query =reference.orderByChild("code").equalTo(pinview.getValue());
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
                 if(dataSnapshot.exists()){
-                    CreateUser createUser;
+
                     for(DataSnapshot childss: dataSnapshot.getChildren()) {
 
 

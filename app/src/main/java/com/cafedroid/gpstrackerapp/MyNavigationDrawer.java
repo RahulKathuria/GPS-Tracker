@@ -39,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -53,7 +54,7 @@ public class MyNavigationDrawer extends AppCompatActivity
     GoogleApiClient client;
     LocationRequest request;
     LatLng latlng;
-    DatabaseReference reference,latReference,lonReference;
+    DatabaseReference reference,latReference,lonReference,newReference;
     FirebaseUser user;
     String current_user_name,current_user_email,current_user_imageUrl;
     View header;
@@ -74,6 +75,47 @@ public class MyNavigationDrawer extends AppCompatActivity
 
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
 
+        newReference = reference.child(user.getUid()).child("circleMembers");
+        newReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()){
+
+                    for(final DataSnapshot childss: dataSnapshot.getChildren()) {
+                        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                if(dataSnapshot1.exists()){
+                                    for(final DataSnapshot userChild : dataSnapshot1.getChildren()){
+                                       if(userChild.getKey().equals(childss.getKey())){
+                                           Log.e("result","hello" + userChild);
+                                           Double latitude = Double.parseDouble(dataSnapshot1.child(userChild.getKey()).child("lat").getValue().toString());
+                                           Double longitude = Double.parseDouble(dataSnapshot1.child(userChild.getKey()).child("lng").getValue().toString());
+                                           latlng = new LatLng(latitude,longitude);
+                                           MarkerOptions options = new MarkerOptions();
+                                           options.position(latlng);
+                                           options.title(dataSnapshot1.child(userChild.getKey()).child("name").getValue().toString());
+                                           mMap.addMarker(options);
+                                       }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
 
@@ -126,6 +168,7 @@ public class MyNavigationDrawer extends AppCompatActivity
 
 
     }
+
 
     @Override
     public void onBackPressed() {
@@ -208,6 +251,8 @@ public class MyNavigationDrawer extends AppCompatActivity
 
     }
 
+
+
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -233,9 +278,14 @@ public class MyNavigationDrawer extends AppCompatActivity
 
             MarkerOptions options = new MarkerOptions();
             options.position(latlng);
-            options.title("Current Location");
+            options.title("My Location");
             mMap.addMarker(options);
         }
+
+
+
+
+
     }
 
 
