@@ -39,16 +39,12 @@ public class JoinCircleActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        pinview = (Pinview)findViewById(R.id.pinview);
+        pinview = findViewById(R.id.pinview);
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
         currentReference = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
 
         current_user_id= user.getUid();
         name = user.getDisplayName();
-
-
-
-
     }
 
 
