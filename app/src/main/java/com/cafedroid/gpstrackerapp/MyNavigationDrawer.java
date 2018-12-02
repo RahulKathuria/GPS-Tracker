@@ -3,6 +3,8 @@ package com.cafedroid.gpstrackerapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -56,6 +58,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
@@ -83,6 +87,7 @@ public class MyNavigationDrawer extends AppCompatActivity
     Marker m;
     ArrayList<String> keyList;
     HashMap<String, Marker> markerHashMap;
+    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +115,9 @@ public class MyNavigationDrawer extends AppCompatActivity
                 if (markerHashMap.get(dataSnapshot.getKey()) == null) {
                     markerHashMap.put(dataSnapshot.getKey(), thisMarker=mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))));
                     thisMarker.setTitle(dataSnapshot.child("name").getValue().toString());
-                } else thisMarker.setPosition(new LatLng(latitude, longitude));
+                } else {
+                    thisMarker.setPosition(new LatLng(latitude, longitude));
+                }
                 markerHashMap.get(dataSnapshot.getKey()).setPosition(new LatLng(latitude, longitude));
 
 //                markerHashMap.get(dataSnapshot.getKey()).position(new LatLng(latitude, longitude));
@@ -201,6 +208,7 @@ public class MyNavigationDrawer extends AppCompatActivity
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+                imageUri=uri;
                 Glide.with(MyNavigationDrawer.this).load(uri).into(profile_image);
             }
         }).addOnFailureListener(new OnFailureListener() {
