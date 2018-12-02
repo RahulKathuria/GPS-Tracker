@@ -73,23 +73,15 @@ public class NameActivity extends AppCompatActivity {
     }
 
     public void selectImage(View v){
-        Intent i = new Intent();
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        i.setType("image/*");
-        startActivityForResult(i,12);
-
+        CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAspectRatio(1,1)
+                .start(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==12 && resultCode ==RESULT_OK&& data!=null){
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1,1)
-                    .start(this);
-
-        }
 
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {

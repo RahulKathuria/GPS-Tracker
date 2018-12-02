@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -38,6 +40,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,11 +52,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyNavigationDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
@@ -64,11 +74,12 @@ public class MyNavigationDrawer extends AppCompatActivity
     LocationRequest request;
     LatLng latlng;
     DatabaseReference reference, latReference, lonReference, newReference;
+    StorageReference storageReference;
     FirebaseUser user;
     String current_user_name, current_user_email, current_user_imageUrl;
     View header;
     TextView name_textView, email_textView;
-    ImageView profile_image;
+    CircleImageView profile_image;
     Marker m;
     ArrayList<String> keyList;
     HashMap<String, Marker> markerHashMap;
@@ -78,13 +89,17 @@ public class MyNavigationDrawer extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_navigation_drawer);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         auth = FirebaseAuth.getInstance();
         markerHashMap = new HashMap<>();
         user = auth.getCurrentUser();
+
+
+
+
         final ValueEventListener markerEvent = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -165,13 +180,13 @@ public class MyNavigationDrawer extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         header = navigationView.getHeaderView(0);
 
@@ -179,17 +194,35 @@ public class MyNavigationDrawer extends AppCompatActivity
         email_textView = header.findViewById(R.id.emailText);
         profile_image = header.findViewById(R.id.imageView);
 
+        storageReference= FirebaseStorage.getInstance().getReference().child("user images/"+user.getUid()+".jpg");
+        Log.e("result","hello" + storageReference);
+       // Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/gps-tracker-87d5e.appspot.com/o/user%20images%2F4VKrEJ6iV5WzI5Cy4Nbpcw7bklO2.jpg?alt=media&token=ff1f1c35-cce6-4d5c-892c-8558c3640a4b").into(profile_image);
+
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(MyNavigationDrawer.this).load(uri).into(profile_image);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.e("TAG", "onFailure: "+storageReference.toString() );
+                Toast.makeText(MyNavigationDrawer.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 current_user_name = dataSnapshot.child(user.getUid()).child("name").getValue(String.class);
                 current_user_email = dataSnapshot.child(user.getUid()).child("email").getValue(String.class);
-                current_user_imageUrl = dataSnapshot.child(user.getUid()).child("imageUrl").getValue(String.class);
+
 
                 Log.e("image", "onDataChange: " + current_user_imageUrl);
                 name_textView.setText(current_user_name);
                 email_textView.setText(current_user_email);
-                Picasso.get().load(current_user_imageUrl).into(profile_image);
+
             }
 
             @Override
@@ -204,7 +237,7 @@ public class MyNavigationDrawer extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -245,10 +278,10 @@ public class MyNavigationDrawer extends AppCompatActivity
             Intent i = new Intent(Intent.ACTION_SEND);
             i.setType("text/plain");
             i.putExtra(Intent.EXTRA_TEXT, "My location is : " + "https://www.google.com/maps/@" + latlng.latitude + "," + latlng.longitude + ",17z");
-            startActivity(i.createChooser(i, "Share Using:"));
+            startActivity(Intent.createChooser(i, "Share Using:"));
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -263,7 +296,6 @@ public class MyNavigationDrawer extends AppCompatActivity
                 .addOnConnectionFailedListener(this)
                 .build();
         client.connect();
-        ;
 
 
     }
