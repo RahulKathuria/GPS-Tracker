@@ -317,11 +317,13 @@ public class MyNavigationDrawer extends AppCompatActivity
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             return;
         }
+        mMap.setMyLocationEnabled(true);
         LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
 
+        Location currentLoc=LocationServices.FusedLocationApi.getLastLocation(client);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLoc.getLatitude(),currentLoc.getLongitude()),15.0f));
     }
 
 
@@ -355,8 +357,7 @@ public class MyNavigationDrawer extends AppCompatActivity
                 m.remove();
             }
 //            m = mMap.addMarker(options);
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
-            mMap.setMinZoomPreference(15.0f);
+//            mMap.animateCamera(CameraUpdateFactory.newLatLng(latlng));
 //
 //            m.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
         }
